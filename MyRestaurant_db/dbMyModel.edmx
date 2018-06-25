@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="restaurant_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="dish">
+          <Key>
+            <PropertyRef Name="id_dish" />
+          </Key>
+          <Property Name="id_dish" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="dish_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="dish_price" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ingredients">
+          <Key>
+            <PropertyRef Name="id_ingredient" />
+          </Key>
+          <Property Name="id_ingredient" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ingredients" Type="text" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'restaurant_db.dbo.recipe_ingred' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="recipe_ingred">
+          <Key>
+            <PropertyRef Name="recipe_id" />
+            <PropertyRef Name="ingredients_id" />
+          </Key>
+          <Property Name="recipe_id" Type="int" Nullable="false" />
+          <Property Name="ingredients_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="recipes">
+          <Key>
+            <PropertyRef Name="id_recipe" />
+          </Key>
+          <Property Name="id_recipe" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="recipe" Type="text" Nullable="false" />
+          <Property Name="dish_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_recipe_ingred_ingredients">
+          <End Role="ingredients" Type="Self.ingredients" Multiplicity="1" />
+          <End Role="recipe_ingred" Type="Self.recipe_ingred" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ingredients">
+              <PropertyRef Name="id_ingredient" />
+            </Principal>
+            <Dependent Role="recipe_ingred">
+              <PropertyRef Name="ingredients_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_recipe_ingred_recipes">
+          <End Role="recipes" Type="Self.recipes" Multiplicity="1" />
+          <End Role="recipe_ingred" Type="Self.recipe_ingred" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recipes">
+              <PropertyRef Name="id_recipe" />
+            </Principal>
+            <Dependent Role="recipe_ingred">
+              <PropertyRef Name="recipe_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_recipes_dish">
+          <End Role="dish" Type="Self.dish" Multiplicity="1" />
+          <End Role="recipes" Type="Self.recipes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="recipes">
+              <PropertyRef Name="dish_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="restaurant_dbModelStoreContainer">
+          <EntitySet Name="dish" EntityType="Self.dish" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ingredients" EntityType="Self.ingredients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="recipes" EntityType="Self.recipes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="recipe_ingred" EntityType="Self.recipe_ingred" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[recipe_ingred].[recipe_id] AS [recipe_id], 
+[recipe_ingred].[ingredients_id] AS [ingredients_id]
+FROM [dbo].[recipe_ingred] AS [recipe_ingred]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_recipe_ingred_ingredients" Association="Self.FK_recipe_ingred_ingredients">
+            <End Role="ingredients" EntitySet="ingredients" />
+            <End Role="recipe_ingred" EntitySet="recipe_ingred" />
+          </AssociationSet>
+          <AssociationSet Name="FK_recipe_ingred_recipes" Association="Self.FK_recipe_ingred_recipes">
+            <End Role="recipes" EntitySet="recipes" />
+            <End Role="recipe_ingred" EntitySet="recipe_ingred" />
+          </AssociationSet>
+          <AssociationSet Name="FK_recipes_dish" Association="Self.FK_recipes_dish">
+            <End Role="dish" EntitySet="dish" />
+            <End Role="recipes" EntitySet="recipes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="restaurant_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="dish">
+          <Key>
+            <PropertyRef Name="id_dish" />
+          </Key>
+          <Property Name="id_dish" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="dish_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="dish_price" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="recipes" Relationship="Self.FK_recipes_dish" FromRole="dish" ToRole="recipes" />
+        </EntityType>
+        <EntityType Name="ingredients">
+          <Key>
+            <PropertyRef Name="id_ingredient" />
+          </Key>
+          <Property Name="id_ingredient" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ingredients1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="recipes" Relationship="Self.recipe_ingred" FromRole="ingredients" ToRole="recipes" />
+        </EntityType>
+        <EntityType Name="recipes">
+          <Key>
+            <PropertyRef Name="id_recipe" />
+          </Key>
+          <Property Name="id_recipe" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="recipe" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dish_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="dish" Relationship="Self.FK_recipes_dish" FromRole="recipes" ToRole="dish" />
+          <NavigationProperty Name="ingredients" Relationship="Self.recipe_ingred" FromRole="recipes" ToRole="ingredients" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_recipes_dish">
+          <End Role="dish" Type="Self.dish" Multiplicity="1" />
+          <End Role="recipes" Type="Self.recipes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="dish">
+              <PropertyRef Name="id_dish" />
+            </Principal>
+            <Dependent Role="recipes">
+              <PropertyRef Name="dish_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="recipe_ingred">
+          <End Role="ingredients" Type="Self.ingredients" Multiplicity="*" />
+          <End Role="recipes" Type="Self.recipes" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="restaurant_dbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dish" EntityType="Self.dish" />
+          <EntitySet Name="ingredients" EntityType="Self.ingredients" />
+          <EntitySet Name="recipes" EntityType="Self.recipes" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <AssociationSet Name="FK_recipes_dish" Association="Self.FK_recipes_dish">
+            <End Role="dish" EntitySet="dish" />
+            <End Role="recipes" EntitySet="recipes" />
+          </AssociationSet>
+          <AssociationSet Name="recipe_ingred" Association="Self.recipe_ingred">
+            <End Role="ingredients" EntitySet="ingredients" />
+            <End Role="recipes" EntitySet="recipes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="restaurant_dbModelStoreContainer" CdmEntityContainer="restaurant_dbContext">
+          <EntitySetMapping Name="dish">
+            <EntityTypeMapping TypeName="restaurant_dbModel.dish">
+              <MappingFragment StoreEntitySet="dish">
+                <ScalarProperty Name="id_dish" ColumnName="id_dish" />
+                <ScalarProperty Name="dish_name" ColumnName="dish_name" />
+                <ScalarProperty Name="dish_price" ColumnName="dish_price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ingredients">
+            <EntityTypeMapping TypeName="restaurant_dbModel.ingredients">
+              <MappingFragment StoreEntitySet="ingredients">
+                <ScalarProperty Name="id_ingredient" ColumnName="id_ingredient" />
+                <ScalarProperty Name="ingredients1" ColumnName="ingredients" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="recipes">
+            <EntityTypeMapping TypeName="restaurant_dbModel.recipes">
+              <MappingFragment StoreEntitySet="recipes">
+                <ScalarProperty Name="id_recipe" ColumnName="id_recipe" />
+                <ScalarProperty Name="recipe" ColumnName="recipe" />
+                <ScalarProperty Name="dish_id" ColumnName="dish_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="restaurant_dbModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="recipe_ingred" TypeName="restaurant_dbModel.recipe_ingred" StoreEntitySet="recipe_ingred">
+            <EndProperty Name="ingredients">
+              <ScalarProperty Name="id_ingredient" ColumnName="ingredients_id" />
+            </EndProperty>
+            <EndProperty Name="recipes">
+              <ScalarProperty Name="id_recipe" ColumnName="recipe_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
