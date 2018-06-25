@@ -27,3 +27,4 @@ namespace MyRestaurant_db
         public virtual ICollection<ingredients> ingredients { get; set; }
     }
 }
+
